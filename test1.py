@@ -22,7 +22,7 @@ default_args = {
 }
 
 with DAG(
-    dag_id='test_print',
+    dag_id='example_for_sent_mail',
     default_args=default_args,
     description='A simple tutorial DAG',
     schedule_interval='0 0 * * *',
