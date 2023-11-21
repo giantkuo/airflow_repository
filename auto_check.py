@@ -82,7 +82,7 @@ def email():
 with DAG(
     dag_id="auto_check",
     default_args=default_args,
-    schedule="0 19 * * *",
+    schedule_interval="0 19 * * *",
     start_date=datetime(2021, 1, 1, tzinfo=local_tz),
     catchup=False,
     max_active_runs=1,
