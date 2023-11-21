@@ -15,11 +15,9 @@ alert_message_body = "\n{} Auto Check Results:\n\n".format(today_date)
 
 default_args = {
     "owner": "Andrew Hsieh",
-    "start_date": days_ago(1),
-    "schedule_interval": "0 19 * * *",
+    "depends_on_past": False,
     "retries": 1,
     "retry_delay": timedelta(minutes=1),
-    "catchup": False,
 }
 
 
@@ -80,7 +78,14 @@ def email():
     )
 
 
-with DAG("auto_check", default_args=default_args) as dag:
+with DAG(
+    dag_id="auto_check",
+    default_args=default_args,
+    schedule="0 19 * * *",
+    start_date=days_ago(2),
+    catchup=False,
+    max_active_runs=1,
+) as dag:
     check_task = PythonOperator(task_id="check", python_callable=check)
 
     email_task = PythonOperator(task_id="send_email", python_callable=email)
