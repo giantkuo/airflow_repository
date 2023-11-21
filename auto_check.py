@@ -1,11 +1,12 @@
 import os
 import smtplib
+import pendulum
 from datetime import datetime, timedelta
 from email.message import EmailMessage
 from airflow import DAG
-from airflow.utils.dates import days_ago
 from airflow.operators.python_operator import PythonOperator
 
+local_tz = pendulum.timezone("Asia/Taipei")
 
 today_date = datetime.today().date().strftime("%Y-%m-%d")
 base_folder = "/mnt/nas-data/Animal/pig_video/andrew_test/"
@@ -82,7 +83,7 @@ with DAG(
     dag_id="auto_check",
     default_args=default_args,
     schedule="0 19 * * *",
-    start_date=days_ago(2),
+    start_date=datetime(2021, 1, 1, tzinfo=local_tz),
     catchup=False,
     max_active_runs=1,
 ) as dag:
