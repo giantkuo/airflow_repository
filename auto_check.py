@@ -9,14 +9,19 @@ base_folder = "/mnt/nas-data/Animal/pig_video/andrew_test/"
 hours_to_check = ["08", "09", "10", "11", "12", "13", "14", "15", "16", "17"]
 recipient_email = "r12631026@ntu.edu.tw"
 
+default_args = {
+    "owner": "Andrew Hsieh",
+    "depends_on_past": False,
+    "retries": 1,
+}
+
 
 @dag(
     dag_id="auto_check",
-    owner="Andrew Hsieh",
+    default_args=default_args,
     start_date=pendulum.datetime(2021, 1, 1, tz=local_tz),
     schedule="@daily",
     catchup=False,
-    retries=1,
 )
 def auto_check_flow():
     def check_folder(folder):
@@ -29,7 +34,7 @@ def auto_check_flow():
         except FileNotFoundError:
             return "[{}] File not found.\n".format(folder[-8:-1])
 
-    @task
+    @task(task_id="check_all_folders")
     def check_all_folders():
         today = pendulum.today(local_tz).format("%Y-%m-%d")
         status_log = "\n{} Auto Check Results:\n\n".format(today)
@@ -38,7 +43,7 @@ def auto_check_flow():
             status_log += check_folder(base_folder + "rpi_3/{}/{}/".format(today, hour))
         return status_log
 
-    @task
+    @task(task_id="email")
     def email(subject, body, to_email):
         sender_email = "dummydumdum375@gmail.com"
         sender_password = "wlqx epfd hqlc ywnu"
