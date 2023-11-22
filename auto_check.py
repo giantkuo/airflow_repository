@@ -12,16 +12,17 @@ recipient_email = "r12631026@ntu.edu.tw"
 default_args = {
     "owner": "Andrew Hsieh",
     "depends_on_past": False,
+    "start_date": pendulum.datetime(2021, 1, 1, tz=local_tz),
+    "schedule_interval": "@daily",
+    "catchup": False,
     "retries": 1,
+    "retry_delay": pendulum.duration(minutes=1),
 }
 
 
 @dag(
     dag_id="auto_check",
     default_args=default_args,
-    start_date=pendulum.datetime(2021, 1, 1, tz=local_tz),
-    schedule="@daily",
-    catchup=False,
 )
 def auto_check_flow():
     def check_folder(folder):
