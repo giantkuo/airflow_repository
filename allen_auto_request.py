@@ -7,10 +7,10 @@ from airflow.decorators import dag, task
 local_tz = pendulum.timezone("Asia/Taipei")
 base_folder = "/mnt/nas-data/Animal/pig_video/andrew_test/"
 hours_to_check = ["08", "09", "10", "11", "12", "13", "14", "15", "16", "17"]
-recipient_email = "r12631026@ntu.edu.tw"
+recipient_email = "toolmenshare@gmail.com"
 
 default_args = {
-    "owner": "Andrew Hsieh",
+    "owner": "Allen Hsieh",
     "depends_on_past": False,
     "start_date": pendulum.datetime(2021, 1, 1, tz=local_tz),
     "schedule_interval": "@daily",
@@ -21,11 +21,11 @@ default_args = {
 
 
 @dag(
-    dag_id="auto_check",
+    dag_id="allen_auto_request",
     default_args=default_args,
 )
-def auto_check_flow():
-    def check_folder(folder):
+def auto_request_flow():
+    def request_folder(folder):
         try:
             file = os.listdir(folder)
             if not file:
