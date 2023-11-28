@@ -25,5 +25,6 @@ with DAG('test_allen', default_args=default_args, catchup=False) as dag:
     auto_request_flow = PythonOperator(
         task_id='auto_request_flow',
         python_callable=auto_request_flow,
-        dag=dag,
+        dag=dag
     )
+    auto_request_flow
