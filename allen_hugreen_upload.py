@@ -20,7 +20,7 @@ def check_file():
 filename = f'data_tmp/{pendulum.yesterday().strftime("%y-%m-%d")}.csv'
 default_args = {
     'owner': 'Allen Hsieh',
-    'start_date': pendulum.datetime(2021, 1, 1, tz=local_tz),
+    'start_date': pendulum.datetime(2023, 12, 4, tz=local_tz),
     'schedule_interval': '@daily',
     'retries': 1,
     'retry_delay': pendulum.duration(minutes=3)
