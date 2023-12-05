@@ -65,12 +65,6 @@ start_task = DummyOperator(
     dag=dag
 )
 
-delete_task = BashOperator(
-    task_id='delete',
-    bash_command='rm -rf data_tmp/*',
-    dag=dag
-)
-
 end_task = DummyOperator(
     task_id='end',
     dag=dag,
