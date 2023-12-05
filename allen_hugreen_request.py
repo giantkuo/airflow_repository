@@ -90,7 +90,7 @@ def data_request():
 filename = f'data_tmp/{pendulum.yesterday().strftime("%y-%m-%d")}.csv'
 default_args = {
     'owner': 'Allen Hsieh',
-    'start_date': pendulum.datetime(2023, 12, 5, tz=local_tz),
+    'start_date': pendulum.datetime(2023, 12, 6, tz=local_tz),
     'schedule_interval': '@daily',
     'retries': 1,
     'retry_delay': pendulum.duration(minutes=3)
