@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import pendulum
 import hashlib
@@ -83,13 +84,13 @@ def data_request():
 
     data_row = [c.strftime('%H:%M:%S'), date.strftime('%H:%M:%S'), tmp, humidity, co2, nh3]  # Replace with the data you want to append
     append_to_csv(file_name, data_row)
-    
+
 
 
 filename = f'data_tmp/{pendulum.yesterday().strftime("%y-%m-%d")}.csv'
 default_args = {
     'owner': 'Allen Hsieh',
-    'start_date': pendulum.datetime(2023, 12, 4, tz=local_tz),
+    'start_date': pendulum.datetime(2023, 12, 5, tz=local_tz),
     'schedule_interval': '@daily',
     'retries': 1,
     'retry_delay': pendulum.duration(minutes=3)
