@@ -8,7 +8,7 @@ from airflow.operators.bash_operator import BashOperator
 
 
 local_tz = pendulum.timezone("Asia/Taipei")
-
+# git
 
 def check_file():
     filename = f'data_tmp/{pendulum.yesterday().strftime("%y-%m-%d")}.csv'
