@@ -91,7 +91,7 @@ filename = f'data_tmp/{pendulum.yesterday().strftime("%y-%m-%d")}.csv'
 default_args = {
     'owner': 'Allen Hsieh',
     'start_date': pendulum.datetime(2023, 12, 6, tz=local_tz),
-    'schedule_interval': '@daily',
+#     'schedule_interval': '@daily',
     'retries': 1,
     'retry_delay': pendulum.duration(minutes=3)
 }
@@ -100,7 +100,7 @@ dag = DAG(
     dag_id='allen_hugreen_request',
     description='Auto request data from hugreen sensors',
     default_args=default_args,
-    schedule='*/5 6-18 * * *'
+    schedule_interval='*/5 6-18 * * *'
 )
 
 data_request_task = PythonOperator(
