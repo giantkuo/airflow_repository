@@ -18,7 +18,7 @@ dag = DAG(
     'print_task',
     default_args=default_args,
     description='A simple DAG that just prints a message',
-    schedule_interval=0 20 *1, 16 * *,
+    schedule_interval="0 20 *1, 16 * *"
 )
 
 print_task = PythonOperator(
