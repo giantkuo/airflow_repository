@@ -8,9 +8,10 @@ def my_print_function():
 
 default_args = {
     'owner': 'admin',
-    'start_date': datetime(2024, 1, 10),
+    'start_date': datetime(2023, 12, 1),
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
+    'schedule_intervel': "0 20 */15 * *"
 }
 
 dag = DAG(
