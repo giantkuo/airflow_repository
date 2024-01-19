@@ -11,14 +11,14 @@ default_args = {
     'start_date': datetime(2023, 12, 1),
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
-    'schedule_interval': "0 20 */15 * *"
+#     'schedule_interval': "0 20 */15 * *"
 }
 
 dag = DAG(
     'print_task',
     default_args=default_args,
     description='A simple DAG that just prints a message',
-    schedule_interval=timedelta(days=1),
+    schedule_interval=0 20 *1, 16 * *,
 )
 
 print_task = PythonOperator(
