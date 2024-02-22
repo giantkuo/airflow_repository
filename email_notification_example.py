@@ -29,7 +29,7 @@ def check_sftp_file():
     sftp_port = 3040
     sftp_username = 'pokemon'
     sftp_password = 'lab304nas'
-    remote_path = "/workspace/nas/Animal/optical_flow_chicken_video/20240114/rpi1/L/"
+    remote_path = "/nas-data/Animal/optical_flow_chicken_video/20240114/rpi1/L/"
 
     # establish SSH client
     ssh = paramiko.SSHClient()
@@ -38,16 +38,17 @@ def check_sftp_file():
 
     # establish SFTP connection
     sftp = ssh.open_sftp()
-
+    global result
     try:
         sftp.stat(remote_path)
-        print(f"File or directory exists: {remote_path}")
+        result = f"File or directory exists: {remote_path}"
     except FileNotFoundError:
-        print(f"File or directory does not exist: {remote_path}")
+        result = f"File or directory does not exist: {remote_path}"
 
     # close connection
     sftp.close()
     ssh.close()
+    return result
 
 
 def check_folder(folder):
