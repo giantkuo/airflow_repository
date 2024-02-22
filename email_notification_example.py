@@ -5,7 +5,7 @@ from email.message import EmailMessage
 # import email.message
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
-
+from airflow.operators.bash import BashOperator
 
 local_tz = pendulum.timezone("Asia/Taipei")
 base_folder = "/workspace/nas/Animal/optical_flow_chicken_video/"
@@ -15,7 +15,7 @@ hours_to_check = ["08", "09", "10", "11", "12", "13", "14", "15", "16", "17"]
 default_args = {
     "owner": "Allen",
     "depends_on_past": False,
-    "start_date": pendulum.datetime(2024, 1, 1, tz=local_tz),
+    "start_date": pendulum.datetime(2024, 2, 1, tz=local_tz),
     "schedule_interval": "0 20 * * *",
     "catchup": False,
     "retries": 1,
@@ -77,6 +77,10 @@ with DAG(
     "email_notification",
     default_args=default_args
 ) as dag:
+    pwd_task = BashOperator(
+        task_id="pwd",
+        bash_command="pwd",
+    )
     check_all_folders_task = PythonOperator(
         task_id="check_all_folders",
         python_callable=check_all_folders,
@@ -89,7 +93,7 @@ with DAG(
         dag=dag,
     )
 
-    check_all_folders_task >> email_task
+    pwd_task >> check_all_folders_task >> email_task
 
 '''
 @dag(
