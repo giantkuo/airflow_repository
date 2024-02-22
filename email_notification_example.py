@@ -16,7 +16,7 @@ default_args = {
     "owner": "Allen",
     "depends_on_past": False,
     "start_date": pendulum.datetime(2024, 1, 1, tz=local_tz),
-    "schedule_interval": "@daily",
+    "schedule_interval": "0 20 * * *",
     "catchup": False,
     "retries": 1,
     "retry_delay": pendulum.duration(minutes=1),
@@ -27,18 +27,19 @@ def check_folder(folder):
     try:
         file = os.listdir(folder)
         if not file:
-            return "[{}] Empty folder.\n".format(folder[-8:-1])
+            return "[{}] Empty folder.\n".format(folder[-14:-1])
         else:
-            return "[{}] Good. {} files found.\n".format(folder[-8:-1], len(file))
+            return "[{}] Good. {} files found.\n".format(folder[-14:-1], len(file))
     except FileNotFoundError:
-        return "[{}] File not found.\n".format(folder[-8:-1])
+        return "[{}] File not found.\n".format(folder[-14:-1])
 
 
 def check_all_folders():
     today = pendulum.today(local_tz).format("Y-MM-DD")
     status_log = "\n{} Auto Check Results:\n\n".format(today)
-    status_log += check_folder(base_folder + '/' + pendulum.today(local_tz).format("YMMDD") + "/rpi1/")
-
+    status_log += check_folder(base_folder + '/' + pendulum.today(local_tz).format("YMMDD") + "/rpi1/R/")
+    status_log += check_folder(base_folder + '/' + pendulum.today(local_tz).format("YMMDD") + "/rpi1/L/")
+    status_log += check_folder(base_folder + '/20240114/rpi1/L')
     # for hour in hours_to_check:
     #     status_log += check_folder(base_folder + "rpi1/")
     #     # status_log += check_folder(base_folder + "rpi_3/{}/{}/".format(yesterday, hour))
