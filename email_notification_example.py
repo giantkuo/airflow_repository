@@ -1,17 +1,16 @@
-import os
+'''
+Author: Allen
+'''
 import smtplib
 import pendulum
 from email.message import EmailMessage
-# import email.message
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
-# from airflow.operators.bash import BashOperator
 import paramiko
 
 local_tz = pendulum.timezone("Asia/Taipei")
 base_folder = "/workspace/nas/Animal/optical_flow_chicken_video/"
 hours_to_check = ["08", "09", "10", "11", "12", "13", "14", "15", "16", "17"]
-# recipient_email = "toolmenshare@gmail.com"
 
 default_args = {
     "owner": "Allen",
@@ -29,7 +28,10 @@ def check_file():
     sftp_port = 3040
     sftp_username = 'pokemon'
     sftp_password = 'lab304nas'
-    remote_path = "/nas-data/Animal/optical_flow_chicken_video/20240114/rpi1/L/"
+    remote_path = "/nas-data/Animal/optical_flow_chicken_video/{}/".format(
+        pendulum.today(local_tz).format("YMMDD")
+    )
+    rpis = ['rpi1/L/', 'rpi1/R/']
 
     # establish SSH client
     ssh = paramiko.SSHClient()
@@ -41,45 +43,25 @@ def check_file():
     global result
     today = pendulum.today(local_tz).format("Y-MM-DD")
     status_log = "\n{} Auto Check Results:\n\n".format(today)
-    try:
-        files = sftp.listdir(remote_path)
-        if files:
-            result = "[{}] Good. {} files found.\n".format(remote_path[-16:-1], len(files))
-        else:
-            result = "[{}] Empty folder.\n".format(remote_path[-16:-1])
-    except FileNotFoundError:
-        result = "[{}] File not found.\n".format(remote_path[-16:-1])
+    for rpi in rpis:
+        try:
+            new_remote_path = remote_path + rpi
+            print(new_remote_path)
+            files = sftp.listdir(new_remote_path)
+            if files:
+                result = "[{}] Good. {} files found.\n".format(new_remote_path[-16:-1], len(files))
+            else:
+                result = "[{}] Empty folder.\n".format(new_remote_path[-16:-1])
+        except FileNotFoundError:
+            result = "[{}] File not found.\n".format(new_remote_path[-16:-1])
 
-    status_log += result
+        status_log += result
 
     # close connection
     sftp.close()
     ssh.close()
     print(status_log)
     return status_log
-
-
-# def check_folder(folder):
-#     try:
-#         file = os.listdir(folder)
-#         if not file:
-#             return "[{}] Empty folder.\n".format(folder[-16:-1])
-#         else:
-#             return "[{}] Good. {} files found.\n".format(folder[-16:-1], len(file))
-#     except FileNotFoundError:
-#         return "[{}] File not found.\n".format(folder[-16:-1])
-
-
-# def check_all_folders():
-#     today = pendulum.today(local_tz).format("Y-MM-DD")
-#     status_log = "\n{} Auto Check Results:\n\n".format(today)
-#     status_log += check_folder(base_folder + '/' + pendulum.today(local_tz).format("YMMDD") + "/rpi1/R/")
-#     status_log += check_folder(base_folder + '/' + pendulum.today(local_tz).format("YMMDD") + "/rpi1/L/")
-#     status_log += check_folder(base_folder + '/20240114/rpi1/L/')
-#     # for hour in hours_to_check:
-#     #     status_log += check_folder(base_folder + "rpi1/")
-#     #     # status_log += check_folder(base_folder + "rpi_3/{}/{}/".format(yesterday, hour))
-#     return status_log
 
 
 def email(**kwargs):
@@ -120,18 +102,10 @@ with DAG(
         python_callable=check_file,
         dag=dag,
     )
-    # check_all_folders_task = PythonOperator(
-    #     task_id="check_all_folders",
-    #     python_callable=check_all_folders,
-    #     dag=dag,
-    # )
-
     email_task = PythonOperator(
         task_id="email",
         python_callable=email,
         dag=dag,
     )
 
-    # pwd_task >> check_all_folders_task >> email_task
     check_file_task >> email_task
-
