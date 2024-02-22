@@ -8,7 +8,7 @@ from airflow.operators.python_operator import PythonOperator
 
 
 local_tz = pendulum.timezone("Asia/Taipei")
-base_folder = "/mnt/nas-data/Animal/chicken_video/Allen_test/"
+base_folder = "/mnt/nas-data/Animal/optical_flow_chicken_video/"
 hours_to_check = ["08", "09", "10", "11", "12", "13", "14", "15", "16", "17"]
 # recipient_email = "toolmenshare@gmail.com"
 
@@ -35,11 +35,13 @@ def check_folder(folder):
 
 
 def check_all_folders():
-    yesterday = pendulum.yesterday(local_tz).format("%Y-%m-%d")
-    status_log = "\n{} Auto Check Results:\n\n".format(yesterday)
-    for hour in hours_to_check:
-        status_log += check_folder(base_folder + "rpi_1/{}/{}/".format(yesterday, hour))
-        # status_log += check_folder(base_folder + "rpi_3/{}/{}/".format(yesterday, hour))
+    today = pendulum.today(local_tz).format("Y-MM-DD")
+    status_log = "\n{} Auto Check Results:\n\n".format(today)
+    status_log += check_folder(base_folder + '/' + pendulum.today(local_tz).format("YMMDD") + "/rpi1/")
+
+    # for hour in hours_to_check:
+    #     status_log += check_folder(base_folder + "rpi1/")
+    #     # status_log += check_folder(base_folder + "rpi_3/{}/{}/".format(yesterday, hour))
     return status_log
 
 
@@ -49,7 +51,7 @@ def email(**kwargs):
     sender_password = "nmuv xsgn sqfn lbmw"
     to_email = 'yylunxie@gmail.com'
     subject = "[{}] Rpi camera system auto check".format(
-        pendulum.today(local_tz).format("%Y-%m-%d")
+        pendulum.today(local_tz).format("Y-MM-DD")
     )
     body = ti.xcom_pull(task_ids='check_all_folders')
 
