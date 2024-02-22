@@ -39,7 +39,7 @@ def check_all_folders():
     status_log = "\n{} Auto Check Results:\n\n".format(today)
     status_log += check_folder(base_folder + '/' + pendulum.today(local_tz).format("YMMDD") + "/rpi1/R/")
     status_log += check_folder(base_folder + '/' + pendulum.today(local_tz).format("YMMDD") + "/rpi1/L/")
-    status_log += check_folder(base_folder + '/20240114/rpi1/L')
+    status_log += check_folder(base_folder + '/20240114/rpi1/L/')
     # for hour in hours_to_check:
     #     status_log += check_folder(base_folder + "rpi1/")
     #     # status_log += check_folder(base_folder + "rpi_3/{}/{}/".format(yesterday, hour))
