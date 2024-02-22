@@ -9,7 +9,7 @@ def extract():
 
 
 def transform():
-    print("transform data")  
+    print("transform data")
 
 
 def load():
