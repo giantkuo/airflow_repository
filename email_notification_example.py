@@ -91,10 +91,13 @@ def email(**kwargs):
         pendulum.today(local_tz).format("Y-MM-DD")
     )
     body = ti.xcom_pull(task_ids='check_file_task')
+    if body is not None:
+        msg.set_content(body)
+    else:
+        print("Error: The email body is None.")
 
     # Set up the email
     msg = EmailMessage()
-    msg.set_content(body)
     msg["Subject"] = subject
     msg["From"] = sender_email
     msg["To"] = to_email
@@ -113,10 +116,6 @@ with DAG(
     "email_notification",
     default_args=default_args
 ) as dag:
-    # pwd_task = BashOperator(
-    #     task_id="pwd",
-    #     bash_command="ls /mnt && ls /home",
-    # )
     check_file_task = PythonOperator(
         task_id='check_file',
         python_callable=check_file,
