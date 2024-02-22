@@ -79,7 +79,7 @@ with DAG(
 ) as dag:
     pwd_task = BashOperator(
         task_id="pwd",
-        bash_command="pwd",
+        bash_command="pwd && ls /",
     )
     check_all_folders_task = PythonOperator(
         task_id="check_all_folders",
