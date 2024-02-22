@@ -24,7 +24,7 @@ default_args = {
 }
 
 
-def check_sftp_file():
+def check_file():
     sftp_host = '140.112.183.104'
     sftp_port = 3040
     sftp_username = 'pokemon'
@@ -39,6 +39,8 @@ def check_sftp_file():
     # establish SFTP connection
     sftp = ssh.open_sftp()
     global result
+    today = pendulum.today(local_tz).format("Y-MM-DD")
+    status_log = "\n{} Auto Check Results:\n\n".format(today)
     try:
         files = sftp.listdir(remote_path)
         if files:
@@ -46,35 +48,38 @@ def check_sftp_file():
         else:
             result = "[{}] Empty folder.\n".format(remote_path[-16:-1])
     except FileNotFoundError:
-        result = "[{}] File not found.\n".format(folder[-16:-1])
+        result = "[{}] File not found.\n".format(remote_path[-16:-1])
+
+    status_log += result
 
     # close connection
     sftp.close()
     ssh.close()
-    return result
-
-
-def check_folder(folder):
-    try:
-        file = os.listdir(folder)
-        if not file:
-            return "[{}] Empty folder.\n".format(folder[-16:-1])
-        else:
-            return "[{}] Good. {} files found.\n".format(folder[-16:-1], len(file))
-    except FileNotFoundError:
-        return "[{}] File not found.\n".format(folder[-16:-1])
-
-
-def check_all_folders():
-    today = pendulum.today(local_tz).format("Y-MM-DD")
-    status_log = "\n{} Auto Check Results:\n\n".format(today)
-    status_log += check_folder(base_folder + '/' + pendulum.today(local_tz).format("YMMDD") + "/rpi1/R/")
-    status_log += check_folder(base_folder + '/' + pendulum.today(local_tz).format("YMMDD") + "/rpi1/L/")
-    status_log += check_folder(base_folder + '/20240114/rpi1/L/')
-    # for hour in hours_to_check:
-    #     status_log += check_folder(base_folder + "rpi1/")
-    #     # status_log += check_folder(base_folder + "rpi_3/{}/{}/".format(yesterday, hour))
+    print(status_log)
     return status_log
+
+
+# def check_folder(folder):
+#     try:
+#         file = os.listdir(folder)
+#         if not file:
+#             return "[{}] Empty folder.\n".format(folder[-16:-1])
+#         else:
+#             return "[{}] Good. {} files found.\n".format(folder[-16:-1], len(file))
+#     except FileNotFoundError:
+#         return "[{}] File not found.\n".format(folder[-16:-1])
+
+
+# def check_all_folders():
+#     today = pendulum.today(local_tz).format("Y-MM-DD")
+#     status_log = "\n{} Auto Check Results:\n\n".format(today)
+#     status_log += check_folder(base_folder + '/' + pendulum.today(local_tz).format("YMMDD") + "/rpi1/R/")
+#     status_log += check_folder(base_folder + '/' + pendulum.today(local_tz).format("YMMDD") + "/rpi1/L/")
+#     status_log += check_folder(base_folder + '/20240114/rpi1/L/')
+#     # for hour in hours_to_check:
+#     #     status_log += check_folder(base_folder + "rpi1/")
+#     #     # status_log += check_folder(base_folder + "rpi_3/{}/{}/".format(yesterday, hour))
+#     return status_log
 
 
 def email(**kwargs):
@@ -85,7 +90,7 @@ def email(**kwargs):
     subject = "[{}] Rpi camera system auto check".format(
         pendulum.today(local_tz).format("Y-MM-DD")
     )
-    body = ti.xcom_pull(task_ids='check_all_folders')
+    body = ti.xcom_pull(task_ids='check_file_task')
 
     # Set up the email
     msg = EmailMessage()
@@ -113,8 +118,8 @@ with DAG(
     #     bash_command="ls /mnt && ls /home",
     # )
     check_file_task = PythonOperator(
-        task_id='check_sftp_file',
-        python_callable=check_sftp_file,
+        task_id='check_file',
+        python_callable=check_file,
         dag=dag,
     )
     # check_all_folders_task = PythonOperator(
