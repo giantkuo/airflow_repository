@@ -8,7 +8,7 @@ from airflow.operators.python_operator import PythonOperator
 
 
 local_tz = pendulum.timezone("Asia/Taipei")
-base_folder = "/mnt/nas-data/Animal/optical_flow_chicken_video/"
+base_folder = "/workspace/nas/Animal/optical_flow_chicken_video/"
 hours_to_check = ["08", "09", "10", "11", "12", "13", "14", "15", "16", "17"]
 # recipient_email = "toolmenshare@gmail.com"
 
@@ -27,11 +27,11 @@ def check_folder(folder):
     try:
         file = os.listdir(folder)
         if not file:
-            return "[{}] Empty folder.\n".format(folder[-14:-1])
+            return "[{}] Empty folder.\n".format(folder[-16:-1])
         else:
-            return "[{}] Good. {} files found.\n".format(folder[-14:-1], len(file))
+            return "[{}] Good. {} files found.\n".format(folder[-16:-1], len(file))
     except FileNotFoundError:
-        return "[{}] File not found.\n".format(folder[-14:-1])
+        return "[{}] File not found.\n".format(folder[-16:-1])
 
 
 def check_all_folders():
