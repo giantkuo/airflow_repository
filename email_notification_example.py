@@ -92,9 +92,9 @@ def email(**kwargs):
     )
     body = ti.xcom_pull(task_ids='check_file')
     if body is not None:
-        msg.set_content(body)
         # Set up the email
         msg = EmailMessage()
+        msg.set_content(body)
         msg["Subject"] = subject
         msg["From"] = sender_email
         msg["To"] = to_email
