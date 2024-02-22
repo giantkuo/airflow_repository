@@ -90,26 +90,25 @@ def email(**kwargs):
     subject = "[{}] Rpi camera system auto check".format(
         pendulum.today(local_tz).format("Y-MM-DD")
     )
-    body = ti.xcom_pull(task_ids='check_file_task')
+    body = ti.xcom_pull(task_ids='check_file')
     if body is not None:
         msg.set_content(body)
+        # Set up the email
+        msg = EmailMessage()
+        msg["Subject"] = subject
+        msg["From"] = sender_email
+        msg["To"] = to_email
+
+        # Connect to Gmail's SMTP server
+        try:
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+                smtp.login(sender_email, sender_password)
+                smtp.send_message(msg)
+            print("Email sent to {}".format(to_email))
+        except Exception as e:
+            print("Failed to send email: {}".format(e))
     else:
         print("Error: The email body is None.")
-
-    # Set up the email
-    msg = EmailMessage()
-    msg["Subject"] = subject
-    msg["From"] = sender_email
-    msg["To"] = to_email
-
-    # Connect to Gmail's SMTP server
-    try:
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-            smtp.login(sender_email, sender_password)
-            smtp.send_message(msg)
-        print("Email sent to {}".format(to_email))
-    except Exception as e:
-        print("Failed to send email: {}".format(e))
 
 
 with DAG(
