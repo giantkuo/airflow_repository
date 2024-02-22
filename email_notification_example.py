@@ -31,7 +31,7 @@ def check_file():
     remote_path = "/nas-data/Animal/optical_flow_chicken_video/{}/".format(
         pendulum.today(local_tz).format("YMMDD")
     )
-    rpis = ['rpi1/L/', 'rpi1/R/']
+    rpis = ['rpi1/L/', 'rpi1/R/', 'rpi3/R/', 'rpi3/L/']
 
     # establish SSH client
     ssh = paramiko.SSHClient()
