@@ -71,6 +71,7 @@ def email(**kwargs):
 
 
 with DAG(
+    "email_notification",
     default_args=default_args
 ) as dag:
     check_all_folders_task = PythonOperator(
