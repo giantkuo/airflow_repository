@@ -10,13 +10,12 @@ import paramiko
 
 local_tz = pendulum.timezone("Asia/Taipei")
 base_folder = "/workspace/nas/Animal/optical_flow_chicken_video/"
-hours_to_check = ["08", "09", "10", "11", "12", "13", "14", "15", "16", "17"]
+# hours_to_check = ["08", "09", "10", "11", "12", "13", "14", "15", "16", "17"]
 
 default_args = {
     "owner": "Allen",
     "depends_on_past": False,
     "start_date": pendulum.datetime(2024, 2, 1, tz=local_tz),
-    "schedule_interval": "0 20 * * *",
     "catchup": False,
     "retries": 1,
     "retry_delay": pendulum.duration(minutes=1),
@@ -95,7 +94,8 @@ def email(**kwargs):
 
 with DAG(
     "email_notification",
-    default_args=default_args
+    default_args=default_args,
+    schedule_interval = "0 20 * * *"
 ) as dag:
     check_file_task = PythonOperator(
         task_id='check_file',
