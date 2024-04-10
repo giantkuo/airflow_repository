@@ -9,7 +9,8 @@ from airflow.operators.python_operator import PythonOperator
 import paramiko
 
 local_tz = pendulum.timezone("Asia/Taipei")
-base_folder = "/workspace/nas/Animal/optical_flow_chicken_video/"
+# base_folder = "/workspace/nas/Animal/optical_flow_chicken_video/"
+base_folder = "/workspace/nas2/Stream/Allen/"
 # hours_to_check = ["08", "09", "10", "11", "12", "13", "14", "15", "16", "17"]
 
 default_args = {
@@ -27,7 +28,7 @@ def check_file():
     sftp_port = 3041
     sftp_username = 'pokemon'
     sftp_password = 'LAB304nas'
-    remote_path = "/nas-data2/Animal/optical_flow_chicken_video/{}/".format(
+    remote_path = "/nas-data2/Stream/Allen/{}/".format(
         pendulum.today(local_tz).format("YMMDD")
     )
     rpis = ['rpi1/L/', 'rpi1/R/', 'rpi2/R/', 'rpi2/L/', 'rpi3/R/', 'rpi3/L/']
@@ -95,7 +96,7 @@ def email(**kwargs):
 with DAG(
     "email_notification",
     default_args=default_args,
-    schedule_interval = "0 19 * * *"
+    schedule_interval = "0 20 * * *"
 ) as dag:
     check_file_task = PythonOperator(
         task_id='check_file',
