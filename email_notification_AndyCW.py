@@ -94,7 +94,7 @@ def email(**kwargs):
 
 
 with DAG(
-    "email_notification",
+    "email_notification_ACW",
     default_args=default_args,
     schedule_interval = "0 20 * * *"
 ) as dag:
