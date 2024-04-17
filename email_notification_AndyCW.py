@@ -9,9 +9,7 @@ from airflow.operators.python_operator import PythonOperator
 import paramiko
 
 local_tz = pendulum.timezone("Asia/Taipei")
-# base_folder = "/workspace/nas/Animal/optical_flow_chicken_video/"
 base_folder = "/workspace/nas2/Stream/AndyCW/"
-# hours_to_check = ["08", "09", "10", "11", "12", "13", "14", "15", "16", "17"]
 
 default_args = {
     "owner": "AndyCW",
@@ -96,7 +94,7 @@ def email(**kwargs):
 with DAG(
     "email_notification_ACW",
     default_args=default_args,
-    schedule_interval = "0 20 * * *"
+    schedule_interval = "0 23 * * *"
 ) as dag:
     check_file_task = PythonOperator(
         task_id='check_file',
